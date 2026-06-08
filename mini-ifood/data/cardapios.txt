@@ -1,0 +1,7 @@
+[ ("SushiLom", [("Temaki de salmao", 24.75), ("Yaksoba", 37.00), ("Sushi 8 pecas", 26.50), ("Uramaki", 22.00), ("Missoshiru", 8.00)])
+, ("PastaVita", [("Espaguete ao sugo", 32.00), ("Fettuccine Alfredo", 38.50), ("Lasanha bolonhesa", 45.00), ("Penne ao pesto", 34.00)])
+, ("BurguerTop", [("Burguer classico", 28.00), ("Burguer duplo", 36.00), ("Fritas grande", 14.00), ("Milk shake", 16.00)])
+, ("DoceVida", [("Bolo de chocolate", 18.00), ("Pudim", 12.00), ("Acai 500ml", 22.00), ("Crepe doce", 15.00)])
+, ("TakoBell", [("Temaki de atum", 22.00), ("Gyoza", 19.00), ("Lamen", 35.00)])
+, ("MassaCasa", [("Nhoque ao sugo", 29.00), ("Ravioli de ricota", 42.00)])
+]

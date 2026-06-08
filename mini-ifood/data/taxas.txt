@@ -1,0 +1,7 @@
+[ ("SushiLom", [("Centro", 5.00), ("Prata", 7.50), ("Mirante", 10.00), ("Catolé", 12.00)])
+, ("PastaVita", [("Centro", 4.00), ("Prata", 6.00), ("Mirante", 9.00), ("Catolé", 11.00)])
+, ("BurguerTop", [("Centro", 3.50), ("Prata", 5.00), ("Mirante", 8.00), ("Catolé", 10.00)])
+, ("DoceVida", [("Centro", 4.50), ("Prata", 6.50), ("Mirante", 9.00), ("Catolé", 11.50)])
+, ("TakoBell", [("Centro", 5.00), ("Prata", 7.00), ("Mirante", 10.00), ("Catolé", 12.50)])
+, ("MassaCasa", [("Centro", 4.00), ("Prata", 6.00), ("Mirante", 8.50), ("Catolé", 10.00)])
+]

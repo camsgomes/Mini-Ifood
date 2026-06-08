@@ -1,0 +1,7 @@
+[ Restaurante {nomeRest = "SushiLom", categoriaRest = "Comida japonesa"}
+, Restaurante {nomeRest = "PastaVita", categoriaRest = "Massas"}
+, Restaurante {nomeRest = "BurguerTop", categoriaRest = "Lanches"}
+, Restaurante {nomeRest = "DoceVida", categoriaRest = "Sobremesas"}
+, Restaurante {nomeRest = "TakoBell", categoriaRest = "Comida japonesa"}
+, Restaurante {nomeRest = "MassaCasa", categoriaRest = "Massas"}
+]
