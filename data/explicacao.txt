@@ -1,5 +1,5 @@
 Como vamos armazenar tudo em arquivos,
-aqui estarão todos posteriormente divididos posteriormente:
+aqui estarão todos posteriormente divididos:
 categoria/
     massas/
        restaurante1
