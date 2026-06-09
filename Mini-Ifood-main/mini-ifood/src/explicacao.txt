@@ -1,0 +1,3 @@
+Aqui a gente divide entre logica das funções de validações,
+divisão entre os tipos/entidades que teremos, parte para leitura de
+arquivos (como vamos substitir por um banco) etc.

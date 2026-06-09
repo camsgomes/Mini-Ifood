@@ -1,0 +1,10 @@
+Como vamos armazenar tudo em arquivos,
+aqui estarão todos posteriormente divididos:
+categoria/
+    massas/
+       restaurante1
+    japones/
+       restaurante1
+    sobremesas/
+       restaurante1
+Além de outros que vão ser necessários, de cupom etc.

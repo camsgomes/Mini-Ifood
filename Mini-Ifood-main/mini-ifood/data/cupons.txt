@@ -1,0 +1,2 @@
+IFOOD10 - Porcentagem - 10.0 - 2026-12-31 - 30.0
+CANGURU5 - ValorFixo - 5.0 - 2026-08-30 - 15.0
