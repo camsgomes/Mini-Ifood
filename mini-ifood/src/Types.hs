@@ -21,8 +21,7 @@ type Taxacao = Map.Map String [(String, Float)]
 type MapCupons = Map.Map String Cupom
 
 data Cupom = Cupom
-  { cupomTipo       :: TipoDesconto
-  , cupomValor      :: Float
+  { cupomValor      :: Float
   , cupomDataLimite :: String   -- formato "YYYY-MM-DD"
   , cupomValorMin   :: Float
   } deriving (Show, Eq, Read)
@@ -35,7 +34,7 @@ data TipoDesconto
   deriving (Show, Eq, Read)
 
 -- Carrinho: (nomeRestaurante, [(indicePrato 1-based, quantidade)])
-type Carrinho = (String, [(Int, Int)])
+type Carrinho = (String, [(Int, Float)])
 
 -- Tipo de pagamento
 data TipoPagamento
