@@ -63,5 +63,6 @@ Este projeto demonstra o domínio dos seguintes temas abordados em sala de aula:
 3. No terminal, compile e construa o projeto usando o Cabal:
    ```bash
    cabal build
-4. No terminal digite
-   `cabal run` para rodar o código
+4. No terminal digite para rodar o código
+   ```bash
+   cabal run
