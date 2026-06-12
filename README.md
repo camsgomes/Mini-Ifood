@@ -20,9 +20,9 @@ Um aplicativo de delivery de comida via terminal, desenvolvido inteiramente em *
 O sistema foi rigorosamente dividido para respeitar a separação entre **Funções Puras** (Transparência Referencial) e **Efeitos Colaterais** (`IO`), dividido em 4 módulos principais:
 
 ### 1. `Types.hs` (Modelagem de Dados)
-Define as estruturas imutáveis do sistema usando **Tipos Algébricos de Dados (ADTs)** e **Sinônimos de Tipos (Type Aliases)**.
-- Define estruturas base como `Restaurante`, `Cupom`, `Cardapio` e `Taxacao` (usando Tuplas e `Map`).
-- Utiliza **Uniões Disjuntas** para definir o `TipoPagamento` (ex: `Pix | CreditoVista | CreditoParcelado Int`).
+Define as estruturas imutáveis do sistema usando Tipos Algébricos de Dados (ADTs) e Sinônimos de Tipos (Type Aliases).
+- Define estruturas base como `Restaurante`, `Cupom`, `Cardapio` e `Taxacao` (usando Tuplas e `Listas`).
+- Utiliza Uniões Disjuntas para definir o `TipoDesconto` (ex: `Porcentagem | ValorFixo | ValorFrete | PorcentagemFrete`) e o `TipoPagamento` (ex: `Pix | CreditoVista | CreditoParcelado Int`).
 - Consolida o estado global de leitura no `AppState`.
 
 ### 2. `FileIO.hs` (Persistência)
