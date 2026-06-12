@@ -51,7 +51,7 @@ formataRestaurantes i (r:rs) = "  " ++ show i ++ ". " ++ nomeRest r ++ "\n" ++ f
 -- com o nome do restaurante e passa os pratos para formataPratos a partir do índice 1
 exibirCardapio :: String -> [(String, Float)] -> String
 exibirCardapio nomeRestaurante pratos = 
-  "\n  === " ++ nomeRestaurante ++ " ===\n\n" ++ formataPratos 1 pratos
+  "\n  --- " ++ nomeRestaurante ++ " ---\n\n" ++ formataPratos 1 pratos
 
 
 -- Função auxiliar para formatar pratos
@@ -91,9 +91,9 @@ geraPontos n = "." ++ geraPontos (n - 1)
 -- itens e calculaValor para o retornar o subtotal
 exibirCarrinho :: (String, [(Int, Float)]) -> [(String, Float)] -> String
 exibirCarrinho (rest, itens) pratos = 
-  "\n  === Carrinho — " ++ rest ++ " ===\n\n" ++
+  "\n  --- Carrinho — " ++ rest ++ " ---\n\n" ++
   formataItensCarrinho itens pratos ++
-  "  ----------------------------------------\n" ++
+  " -------------------------------------------------- \n" ++
   "  Subtotal: R$ " ++ formatFloat (calculaValor itens pratos) ++ "\n"
 
 -- Função auxiliar para formatar itens do carrinho

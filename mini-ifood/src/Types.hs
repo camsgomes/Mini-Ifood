@@ -40,7 +40,7 @@ type Carrinho = (String, [(Int, Float)])
 data TipoPagamento
   = Pix
   | CreditoVista
-  | CreditoParcelado Int   -- numero de parcelas
+  | Debito
   deriving (Show, Eq, Read)
 
 -- Estado global do app (carregado uma vez no Main)
