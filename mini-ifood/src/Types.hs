@@ -1,4 +1,4 @@
--- Arquivo contendo a definição de todos os tipos (simulação do que seria entidades em outras linguagens)
+-- Arquivo contendo a definição de todos os tipos (modelagem do que seria entidades em outras linguagens)
 -- Presente no sistema.
 
 module Types where
@@ -50,7 +50,6 @@ data TipoDesconto
   | ValorFrete
   | PorcentagemFrete
   deriving (Show, Eq, Read)
-
 
 
 -- TipoPagamento
