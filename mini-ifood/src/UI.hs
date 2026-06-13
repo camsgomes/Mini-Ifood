@@ -2,15 +2,11 @@ module UI ( menuCategorias ) where
 
 import Types
 import Logic
-import qualified Data.Map.Strict as Map
-import Data.Char  (toUpper)
 import Data.Time  (getCurrentTime, formatTime, defaultTimeLocale)
 import System.IO  (hFlush, stdout)
-import Types (TipoPagamento)
 
---------------------------------------------------------------------------------
--- Helpers de terminal
---------------------------------------------------------------------------------
+
+-- Funções Auxiliares de Visualização do Sistema
 
 -- Impressão de mensagem e captura de entrada na mesma linha
 -- Funcionamento: Exibe o texto enviado no parâmetro e utiliza hFlush stdout 
@@ -45,7 +41,7 @@ lerOpcaoOuZero msg limite = do
   if opcao == 0 || (opcao >= 1 && opcao <= limite)
     then return opcao
     else do
-      putStrLn "  Opção inválida. Digite um npumero da lista ou 0 para sair."
+      putStrLn "  Opção inválida. Digite um número da lista ou 0 para sair."
       lerOpcaoOuZero msg limite
 
 -- Captura e formatação da data do sistema
@@ -56,9 +52,8 @@ dataHoje = do
   t <- getCurrentTime
   return (formatTime defaultTimeLocale "%Y-%m-%d" t)
 
---------------------------------------------------------------------------------
+
 -- TELA 1 — Categorias
---------------------------------------------------------------------------------
 
 -- Exibição do menu principal de categorias
 -- Uso de Lazy Evaluation
@@ -82,18 +77,18 @@ menuCategorias estado = do
   where
     listaDeCategorias = categoriasUnicas (restaurantes estado)
 
---------------------------------------------------------------------------------
+
 -- TELA 2 — Restaurantes da categoria
---------------------------------------------------------------------------------
 
 -- Exibição e seleção de restaurantes filtrados
 -- Uso de Lazy Evaluation e composição implícita de estados
 -- Funcionamento: Filtra e exibe os restaurantes pertencentes à categoria selecionada. 
--- Se o usuário digitar 0, retorna ao menuCategorias. Caso selecione um restaurante válido, avança para menuCardapio
+-- Se o usuário digitar 0, retorna ao menuCategorias. 
+-- Caso selecione um restaurante válido, avança para menuCardapio
 menuRestaurantes :: AppState -> String -> IO ()
-menuRestaurantes estado listaDeCategorias = do
-  putStrLn ("\n  --- " ++ listaDeCategorias ++ " ---\n")
-  putStr (exibirRestaurantes (restaurantes estado) listaDeCategorias)
+menuRestaurantes estado categoriaEscolhida = do
+  putStrLn ("\n  --- " ++ categoriaEscolhida ++ " ---\n")
+  putStr (exibirRestaurantes (restaurantes estado) categoriaEscolhida)
   putStrLn " -------------------------------------------------- "
   putStrLn "  0. Voltar"
   
@@ -103,11 +98,9 @@ menuRestaurantes estado listaDeCategorias = do
     then menuCategorias estado
     else menuCardapio estado (nomeRest (rests !! (opcao - 1))) []
   where
-    rests = restaurantesPorCategoria (restaurantes estado) listaDeCategorias
+    rests = restaurantesPorCategoria (restaurantes estado) categoriaEscolhida
 
---------------------------------------------------------------------------------
 -- TELA 3 — Cardápio + adição de itens
---------------------------------------------------------------------------------
 
 -- Exibição do cardápio e controle de adição de itens ao carrinho
 -- Conversão de tipos com read
@@ -150,9 +143,8 @@ adicionarItem ((i, q):rest) idx qtd
   | i == idx  = (i, q + qtd) : rest
   | otherwise = (i, q) : adicionarItem rest idx qtd
 
---------------------------------------------------------------------------------
+
 -- TELA 4 — Carrinho
---------------------------------------------------------------------------------
 
 -- Exibição e operação das opções do carrinho de compras
 -- Captura uma opção numérica de 1 a 3 que encaminha para: (1) Checkout do 
@@ -176,14 +168,15 @@ menuCarrinho estado rest itens = do
   where
     pratos = pratosDoRestaurante (cardapio estado) rest
 
---------------------------------------------------------------------------------
--- TELA 5 — Checkout (bairro → endereço → cupom → pagamento → confirmar)
---------------------------------------------------------------------------------
+-- TELA 5 — Checkout (bairro -> endereço -> cupom -> pagamento -> confirmar)
 
 -- Fechamento de compras
--- Uso de mapeamento de funções em Map.toList
--- Funcionamento: Executa sequencialmente as etapas de frete por bairro, endereço, cupom de desconto e escolha de pagamento.
--- Computa os totais e solicita confirmação do pedido.
+-- Uso de repasse de Estado (AppState) e Escopo Léxico (where)
+-- Funcionamento: Executa sequencialmente as etapas de frete por bairro, endereço, 
+-- cupom de desconto e escolha de pagamento.
+-- Computa os totais extraindo os dados diretamente das listas nativas e 
+-- solicita confirmação do pedido
+
 checkout :: AppState -> (String, [(Int, Float)]) -> IO ()
 checkout estado (rest, itens) = do
   putStrLn "\n  --- Entrega ---\n"
@@ -203,13 +196,16 @@ checkout estado (rest, itens) = do
   where
     pratos   = pratosDoRestaurante (cardapio estado) rest
     subtotal = calcularSubtotal (rest, itens) (cardapio estado)
-    taxas    = buscaTaxas rest (Map.toList (taxacao estado))
+    taxas    = buscaTaxas rest (taxacao estado)
 
 -- Validação da confirmação final e execução do pedido
 -- Uso de estruturas condicionais (if-then-else)
--- Funcionamento: Analisa a String de resposta obtida do terminal. Se o caractere digitado for "S" ou "s", valida o sucesso da operação, 
--- emitindo a mensagem de pedido realizado. Caso seja "N" ou "n", exibe uma mensagem de pedido cancelado e retorna a menuCategorias.
--- Caso seja inserido qualquer outro valor, é exibida uma mensagem de opção inválida e a função checkoutReconfirmar é chamada novamente. 
+-- Funcionamento: Analisa a String de resposta obtida do terminal. 
+-- Se o caractere digitado for "S" ou "s", valida o sucesso da operação, 
+-- emitindo a mensagem de pedido realizado. Caso seja "N" ou "n", 
+-- exibe uma mensagem de pedido cancelado e retorna a menuCategorias.
+-- Caso seja inserido qualquer outro valor, é exibida uma mensagem de opção inválida 
+-- e a função checkoutReconfirmar é chamada novamente. 
 checkoutReconfirmar :: AppState -> (String, [(Int, Float)]) -> [a] -> Float -> Float -> Float -> TipoPagamento -> String -> String -> IO ()
 checkoutReconfirmar estado (rest, itens) pratos subtotal frete desconto tipoPag bairro endereco = do
   resp <- prompt "\n  Confirmar pedido? (s/n): "
@@ -233,14 +229,13 @@ checkoutReconfirmar estado (rest, itens) pratos subtotal frete desconto tipoPag 
 -- restaurante, retorna a lista de taxas vinculada. Caso contrário, 
 -- segue recursivamente inspecionando o resto da lista até o esgotamento (caso base, retorna vazio)
 buscaTaxas :: String -> [(String, [a])] -> [a]
-buscaTaxas parada [] = []
+buscaTaxas _ [] = []
 buscaTaxas nomeBuscado ((nome, ts):resto)
   | nomeBuscado == nome = ts
   | otherwise           = buscaTaxas nomeBuscado resto
 
---------------------------------------------------------------------------------
+
 -- Etapas do Checkout
---------------------------------------------------------------------------------
 
 -- Seleção de frete e localidade de entrega
 -- Uso de casamento de padrões
@@ -264,8 +259,8 @@ etapaBairro taxas = do
 -- Caso contenha elementos, desestrutura a primeira tupla pegando apenas a String do bairro,
 -- imprime essa string pelo índice auto-incrementado 'i', e chama a si mesma para o resto da lista com (i + 1)
 imprimeBairros :: Int -> [(String, Float)] -> IO ()
-imprimeBairros parada [] = return ()
-imprimeBairros i ((bairro, parada):resto) = do
+imprimeBairros _ [] = return ()
+imprimeBairros i ((bairro, _):resto) = do
   putStrLn ("  " ++ show i ++ ". " ++ bairro)
   imprimeBairros (i + 1) resto
 
@@ -273,8 +268,8 @@ imprimeBairros i ((bairro, parada):resto) = do
 -- Uso de Lazy Evaluation
 -- Funcionamento: Captura o código digitado. Se for vazio, ignora e retorna 0.0. 
 -- Caso contrário, obtém a data atual via dataHoje e faz o encadeamento das funções de verificação e cálculo de desconto 
-etapaCupom :: MapCupons -> Float -> IO Float
-etapaCupom mapC subtotal = do
+etapaCupom :: ListaCupons -> Float -> IO Float
+etapaCupom listC subtotal = do
   putStrLn "  Digite o codigo do cupom (ou Enter para pular):\n"
   codigo <- prompt "  Cupom: "
   
@@ -284,7 +279,7 @@ etapaCupom mapC subtotal = do
       return 0.0
     else do
       hoje <- dataHoje
-      imprimeDesconto (aplicarDesconto (verificarCupom codigo subtotal hoje mapC) subtotal)
+      imprimeDesconto (aplicarDesconto (verificarCupom codigo subtotal hoje listC) subtotal)
 
 -- Exibição do feedback de aplicação de cupom promocional
 -- Uso de estruturas condicionais (if-then-else) e efeitos colaterais (IO)
@@ -313,7 +308,8 @@ etapaPagamento = do
 
 -- Tradução de inteiros para o Tipo de Dado Algébrico de pagamento
 -- Uso de casamento de padrões
--- Funcionamento: Mapeia o número recebido da entrada padrão diretamente para o construtor correto do tipo TipoPagamento
+-- Funcionamento: Associa o número recebido da entrada padrão diretamente 
+-- para o construtor correto do tipo TipoPagamento 
 convertePagamento :: Int -> TipoPagamento
 convertePagamento 1 = Pix
 convertePagamento 2 = CreditoVista
@@ -352,7 +348,7 @@ exibirResumoFinal pratos (rest, itens) subtotal frete desconto tipoPag total bai
 -- Funcionamento: Para cada tupla de item (índice, quantidade) na lista, indica a
 -- formatação para exibirItemResumo e faz a chamada recursiva com a cauda da lista
 imprimeItensResumo :: [(String, Float)] -> [(Int, Float)] -> IO ()
-imprimeItensResumo parada [] = return ()
+imprimeItensResumo _ [] = return ()
 imprimeItensResumo pratos (item:resto) = do
   exibirItemResumo pratos item
   imprimeItensResumo pratos resto

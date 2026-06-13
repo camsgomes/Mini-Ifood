@@ -1,6 +1,6 @@
-[ ("BEMVINDO", Cupom {cupomValor = 10.0, cupomDataLimite = "2026-12-31", cupomValorMin = 0.0})
-, ("FRETE0", Cupom {cupomValor = 999.0, cupomDataLimite = "2026-12-31", cupomValorMin = 50.0})
+[ ("BEMVINDO", Cupom {cupomValor = 10.0, cupomDataLimite = "2026-09-16", cupomValorMin = 0.0})
+, ("FRETE0", Cupom {cupomValor = 10.0, cupomDataLimite = "2026-06-12", cupomValorMin = 50.0})
 , ("DESC5", Cupom {cupomValor = 5.0, cupomDataLimite = "2026-12-31", cupomValorMin = 30.0})
 , ("VERAO15", Cupom {cupomValor = 15.0, cupomDataLimite = "2026-08-31", cupomValorMin = 80.0})
-, ("TAXA50", Cupom {cupomValor = 50.0, cupomDataLimite = "2026-12-31", cupomValorMin = 40.0})
+, ("TAXA50", Cupom {cupomValor = 50.0, cupomDataLimite = "2026-10-27", cupomValorMin = 40.0})
 ]

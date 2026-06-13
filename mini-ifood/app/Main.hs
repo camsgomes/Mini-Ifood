@@ -4,14 +4,13 @@ import Types
 import FileIO
 import UI
 
-import qualified Data.Map.Strict as Map
 import System.IO        (hSetBuffering, stdout, BufferMode(..))
 import System.Exit      (exitSuccess)
 import Control.Exception (catch, IOException)
 
--- ---------------------------------------------------------------------------
+
 -- Caminhos dos arquivos de dados
--- ---------------------------------------------------------------------------
+
 pathRestaurantes :: FilePath
 pathRestaurantes = "data/restaurantes.txt"
 
@@ -24,17 +23,17 @@ pathTaxas = "data/taxas.txt"
 pathCupons :: FilePath
 pathCupons = "data/cupons.txt"
 
--- ---------------------------------------------------------------------------
+
 -- Main: carrega tudo uma vez e inicia o loop
--- ---------------------------------------------------------------------------
+
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
 
   rests <- carregar "restaurantes" (loadRestaurantes pathRestaurantes) []
-  card  <- carregar "cardapios"    (loadCardapio     pathCardapios)    Map.empty
-  tax   <- carregar "taxas"        (loadTaxacao      pathTaxas)        Map.empty
-  cups  <- carregar "cupons"       (loadCupons       pathCupons)       Map.empty
+  card  <- carregar "cardapios"    (loadCardapio     pathCardapios)    []
+  tax   <- carregar "taxas"        (loadTaxacao      pathTaxas)        []
+  cups  <- carregar "cupons"       (loadCupons       pathCupons)       []
 
   if null rests
     then do
@@ -50,9 +49,9 @@ main = do
             }
       menuCategorias estado
 
--- ---------------------------------------------------------------------------
+
 -- Carrega um arquivo com fallback silencioso em caso de erro
--- ---------------------------------------------------------------------------
+
 carregar :: String -> IO a -> a -> IO a
 carregar nome acao fallback =
   catch acao (handler fallback)

@@ -9,7 +9,6 @@ module Logic (
 
 import Types
 import Data.Char (toUpper)
-import qualified Data.Map.Strict as Map
 
 -- Funções de exibição
 
@@ -52,7 +51,6 @@ formataRestaurantes i (r:rs) = "  " ++ show i ++ ". " ++ nomeRest r ++ "\n" ++ f
 exibirCardapio :: String -> [(String, Float)] -> String
 exibirCardapio nomeRestaurante pratos = 
   "\n  --- " ++ nomeRestaurante ++ " ---\n\n" ++ formataPratos 1 pratos
-
 
 -- Função auxiliar para formatar pratos
 -- Uso de recursão e casamento de padrões
@@ -119,21 +117,21 @@ calcularSubtotal (rest, itens) card =
     calculaValor itens (pratosDoRestaurante card rest)
 
 calculaValor :: [(Int, Float)] -> [(String, Float)] -> Float
-calculaValor [] parada = 0.0
+calculaValor [] _parada = 0.0
 calculaValor ((idx, qtd):restoItens) pratos = 
     (qtd * valor) + calculaValor restoItens pratos
   where
-    (parada, valor) = pratos !! (idx - 1)
+    (_parada, valor) = pratos !! (idx - 1)
 
 calcularFrete :: [(String, Float)] -> Int -> Float
 calcularFrete taxas idx = extraiFrete (taxas !! (idx - 1))
   where
     extraiFrete (_, frete) = frete
 
--- A função principal apenas converte o Map para Lista e repassa para a função recursiva
-verificarCupom :: String -> Float -> String -> MapCupons -> Cupom
-verificarCupom codigo subtotal hoje mapC = 
-  buscaEValidaCupom (map toUpper codigo) subtotal hoje (Map.toList mapC)
+-- A função principal apenas repassa a lista para a função recursiva 
+verificarCupom :: String -> Float -> String -> ListaCupons -> Cupom
+verificarCupom codigo subtotal hoje listC = 
+  buscaEValidaCupom (map toUpper codigo) subtotal hoje listC
 
 {-
   MÉTODO: buscaEValidaCupom
@@ -157,7 +155,7 @@ buscaEValidaCupom codBuscado subtotal hoje ((cod, cupom):resto)
   -- 3ª Guarda (otherwise): O código não é esse. Chama a função de novo passando o resto da lista!
   | otherwise = buscaEValidaCupom codBuscado subtotal hoje resto
 
--- Aplica o desconto mapeando as opções por Casamento de Padrões
+-- Aplica o desconto extraindo os dados diretamente das listas, selecionando as opções por Casamento de Padrões
 aplicarDesconto :: Cupom -> Float -> Float
 aplicarDesconto c subtotal = minimo (cupomValor c) subtotal
 
@@ -167,11 +165,6 @@ minimo a b
   | a < b     = a
   | otherwise = b
 
-calculaDesconto :: TipoDesconto -> Float -> Float -> Float -> Float
-calculaDesconto Porcentagem      valorCupom subtotal _     = subtotal * (valorCupom / 100.0)
-calculaDesconto ValorFixo        valorCupom subtotal _     = minimo valorCupom subtotal
-calculaDesconto ValorFrete       valorCupom _        frete = minimo valorCupom frete
-calculaDesconto PorcentagemFrete valorCupom _        frete = frete * (valorCupom / 100.0)
 
 -- Fator de pagamento sem fromIntegral e com casamento de padrões explícito
 -- Verificar se ficarão só esse mesmo
@@ -179,7 +172,6 @@ fatorPagamento :: TipoPagamento -> Float
 fatorPagamento Pix          = 1.0
 fatorPagamento CreditoVista = 1.03
 fatorPagamento Debito       = 1.01
-
 
 calcularTotal :: Float -> Float -> Float -> TipoPagamento -> Float
 calcularTotal subtotal frete desconto tipoPag =
@@ -216,10 +208,9 @@ restaurantesPorCategoria (r:rs) cat
   | categoriaRest r == cat = r : restaurantesPorCategoria rs cat
   | otherwise              = restaurantesPorCategoria rs cat
 
--- Converte a biblioteca Map para Lista nas bordas do sistema, 
--- preservando a manipulação purista internamente.
+-- Busca a lista de pratos de um restaurante específico
 pratosDoRestaurante :: Cardapio -> String -> [(String, Float)]
-pratosDoRestaurante card rest = buscaPratos rest (Map.toList card)
+pratosDoRestaurante card rest = buscaPratos rest card
 
 buscaPratos :: String -> [(String, [(String, Float)])] -> [(String, Float)]
 buscaPratos _ [] = []
