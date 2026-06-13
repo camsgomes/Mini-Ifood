@@ -46,12 +46,12 @@ getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: 
 
 
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
-bindir     = "/home/natalia/.cabal/bin"
-libdir     = "/home/natalia/.cabal/lib/x86_64-linux-ghc-9.6.7/minifood-0.1.0.0-inplace-minifood"
-dynlibdir  = "/home/natalia/.cabal/lib/x86_64-linux-ghc-9.6.7"
-datadir    = "/home/natalia/.cabal/share/x86_64-linux-ghc-9.6.7/minifood-0.1.0.0"
-libexecdir = "/home/natalia/.cabal/libexec/x86_64-linux-ghc-9.6.7/minifood-0.1.0.0"
-sysconfdir = "/home/natalia/.cabal/etc"
+bindir     = "/home/clarice/.cabal/bin"
+libdir     = "/home/clarice/.cabal/lib/x86_64-linux-ghc-9.6.7/minifood-0.1.0.0-inplace-minifood"
+dynlibdir  = "/home/clarice/.cabal/lib/x86_64-linux-ghc-9.6.7"
+datadir    = "/home/clarice/.cabal/share/x86_64-linux-ghc-9.6.7/minifood-0.1.0.0"
+libexecdir = "/home/clarice/.cabal/libexec/x86_64-linux-ghc-9.6.7/minifood-0.1.0.0"
+sysconfdir = "/home/clarice/.cabal/etc"
 
 getBinDir     = catchIO (getEnv "minifood_bindir")     (\_ -> return bindir)
 getLibDir     = catchIO (getEnv "minifood_libdir")     (\_ -> return libdir)

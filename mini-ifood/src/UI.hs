@@ -233,7 +233,7 @@ checkoutReconfirmar estado (rest, itens) pratos subtotal frete desconto tipoPag 
 -- restaurante, retorna a lista de taxas vinculada. Caso contrário, 
 -- segue recursivamente inspecionando o resto da lista até o esgotamento (caso base, retorna vazio)
 buscaTaxas :: String -> [(String, [a])] -> [a]
-buscaTaxas _ [] = []
+buscaTaxas parada [] = []
 buscaTaxas nomeBuscado ((nome, ts):resto)
   | nomeBuscado == nome = ts
   | otherwise           = buscaTaxas nomeBuscado resto
@@ -264,8 +264,8 @@ etapaBairro taxas = do
 -- Caso contenha elementos, desestrutura a primeira tupla pegando apenas a String do bairro,
 -- imprime essa string pelo índice auto-incrementado 'i', e chama a si mesma para o resto da lista com (i + 1)
 imprimeBairros :: Int -> [(String, Float)] -> IO ()
-imprimeBairros _ [] = return ()
-imprimeBairros i ((bairro, _):resto) = do
+imprimeBairros parada [] = return ()
+imprimeBairros i ((bairro, parada):resto) = do
   putStrLn ("  " ++ show i ++ ". " ++ bairro)
   imprimeBairros (i + 1) resto
 
@@ -352,7 +352,7 @@ exibirResumoFinal pratos (rest, itens) subtotal frete desconto tipoPag total bai
 -- Funcionamento: Para cada tupla de item (índice, quantidade) na lista, indica a
 -- formatação para exibirItemResumo e faz a chamada recursiva com a cauda da lista
 imprimeItensResumo :: [(String, Float)] -> [(Int, Float)] -> IO ()
-imprimeItensResumo _ [] = return ()
+imprimeItensResumo parada [] = return ()
 imprimeItensResumo pratos (item:resto) = do
   exibirItemResumo pratos item
   imprimeItensResumo pratos resto
