@@ -79,32 +79,29 @@ exibirCarrinho (rest, itens) pratos =
 -- Cálculo — funções puras
 -- ---------------------------------------------------------------------------
 
--- Soma o valor de todos os itens do carrinho
+-- Soma de todos os itens do carrinho
 calcularSubtotal :: Carrinho -> Cardapio -> Float
 calcularSubtotal (rest, itens) card =
   case Map.lookup rest card of
     Nothing     -> 0.0
     Just pratos -> somarItens itens pratos
   where
-    --  Casamento de Padrões: Condição de parada da recursão (lista vazia)
+    -- Condição de parada da recursão (lista vazia)
     somarItens [] carrinho = 0.0
-    -- Casamento de Padrões: Desconstruindo a cabeça ((idx, qtd)) e a cauda (resto)
+    -- Retorna o valor do frete com proteção contra índice fora dos limites (Safe Indexing)
     somarItens ((idx, qtd):resto) prs
-      -- Guardas: Garantindo que o índice seja válido antes de usar o !! (acessa elemento de uma lista pelo indice)
-      | idx >= 1  = valorAtual + somarItens resto prs  -- Passo Recursivo
+      | idx >= 1  = valorAtual + somarItens resto prs  
       | otherwise = somarItens resto prs
-      -- where: Organizando as variáveis locais
+      -- Váriaveis locais
       where
         (carrinho, val)   = prs !! (idx - 1)  
         valorAtual = val * fromIntegral qtd
 
--- Retorna o valor do frete para o bairro escolhido
--- Recebe a lista de (bairro, taxa) do restaurante
+-- Retorna o valor do frete para o bairro escolhido e recebe a lista de (bairro, taxa) do restaurante
 calcularFrete :: [(String, Float)] -> Int -> Float
-calcularFrete taxas idx = snd (taxas !! (idx - 1)) --snd: cfunção retorna segundo elemento de uma tuṕla
+calcularFrete taxas idx = snd (taxas !! (idx - 1)) 
 
--- Verifica se o cupom pode ser aplicado:
--- retorna Left com mensagem de erro ou Right com o cupom válido
+-- Verifica se o cupom pode ser aplicado 
 verificarCupom :: String -> Float -> String -> MapCupons -> Either String Cupom
 verificarCupom codigo subtotal hoje mapC =
   case Map.lookup (map toUpper codigo) mapC of
@@ -117,8 +114,7 @@ verificarCupom codigo subtotal hoje mapC =
           Left "Cupom expirado."
       | otherwise -> Right c
 
--- Aplica o desconto do cupom sobre subtotal e frete
--- Retorna o valor do desconto (a ser subtraido)
+-- Aplica o desconto do cupom sobre subtotal e frete 
 aplicarDesconto :: Cupom -> Float -> Float -> Float
 aplicarDesconto c subtotal frete =
   case cupomTipo c of
@@ -127,7 +123,7 @@ aplicarDesconto c subtotal frete =
     ValorFrete       -> min (cupomValor c) frete
     PorcentagemFrete -> frete * (cupomValor c / 100.0)
 
--- Fator multiplicador de acordo com o tipo de pagamento
+-- Taxa de acréscimo de acordo com o tipo de pagamento
 -- Pix:              x 1.0   (sem acréscimo)
 -- Crédito à vista:  x 1.03  (+3%)
 -- Crédito 2x:       x 1.05  (+5%)
